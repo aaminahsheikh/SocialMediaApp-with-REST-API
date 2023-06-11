@@ -1,0 +1,44 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="container mt-3 mb-3">
+  <h3 class="text-center">All Posts</h3>
+  <div class="col mb-3">
+    <a href="{% url 'create-post' %}" class="btn btn-primary">New Post</a>
+  </div>
+
+  {% for post in posts %}
+  <div class="col mb-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">
+          Posted by: @{{ post.post_user.username }}
+        </h5>
+        <p class="card-text">
+          {{ post.body | truncatechars:200 }} {{ post.created_at|timesince }} ago
+        </p>
+        <small>Total Likes: {{ post.num_of_likes }}</small>
+
+        {% if request.user in post.post_likes.all %}
+        <a href="{% url 'like-post' post.id %}" class="btn btn-sm btn-success"
+          >Unlike</a
+        >
+        {% else %}
+        <a href="{% url 'like-post' post.id %}" class="btn btn-sm btn-success"
+          >Like</a
+        >
+        {% endif %} {% if request.user == post.post_user %}
+        <a href="{% url 'update-post' post.id %}" class="btn btn-sm btn-warning"
+          >Update</a
+        >
+        <a href="{% url 'delete-post' post.id %}" class="btn btn-sm btn-danger"
+          >Delete</a
+        >
+        {% endif %}
+      </div>
+    </div>
+    <br />
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock content %}
